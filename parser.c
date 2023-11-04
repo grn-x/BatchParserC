@@ -46,8 +46,8 @@ void modifyText(char **text)
 {
     char *originalText = *text;
     int len = strlen(originalText);
-    //char *newText = (char *)malloc((len * 2 + 1) * sizeof(char)); // Maximum possible length, each character might need to be doubled
-    char *newText = (char *)malloc((len * 3 + 1) * sizeof(char)); // Maximum possible length, each character might need to be trippled ^^!
+    char *newText = (char *)malloc((len * 2 + 1) * sizeof(char)); // Maximum possible length, each character might need to be doubled
+    //char *newText = (char *)malloc((len * 3 + 1) * sizeof(char)); // Maximum possible length, each character might need to be trippled ^^!
 
     if (newText == NULL)
     {
@@ -74,7 +74,7 @@ void modifyText(char **text)
             newText[j++] = originalText[i];
             break;
         case '!':
-            newText[j++] = '^';
+            //newText[j++] = '^';
             newText[j++] = '^';
             break;
 
@@ -103,6 +103,7 @@ bool containsOnlyWhiteSpace(const char* str) {
 
 
 void printingTemplate(char **text, const char *fileName) {
+    printf("\n%s\n", fileName);
     if (**text == '\0') {
         *text = malloc(strlen("@(Echo. )") + 1);
        if (*text == NULL) {
@@ -194,8 +195,8 @@ char *readLine(FILE *file) {
 
 
 int main(int argc, char *argv[]) {
-    if (argc < 3 || argc > 4) {
-        printf("Usage: program.exe <documentPath> <batchFilePath> [optional: createdFileName]\n");
+    if (argc < 3 || argc > 5) {
+        printf("Usage: program.exe <documentPath> <batchFilePath> [optional: string createdFileName] [optional: boolean[0;1] displayParsedLines]\n");
         return 1;
     }
 
@@ -203,7 +204,11 @@ int main(int argc, char *argv[]) {
 
     const char *documentPath = argv[1];
     const char *batchFilePath = argv[2];
-    const char *newBatchName = argc == 4 ? argv[3] : fileName;
+    const char *newBatchName = argc == 4 || argc == 5 ? argv[3] : fileName;
+    printf("%s", argv[3]);
+        printf("%s", newBatchName);
+
+    bool toggleBoolean = argc == 5 ? (bool)atoi(argv[4]) : false;
 
     FILE *file = fopen(documentPath, "r");
     if (!file) {
@@ -220,14 +225,17 @@ int main(int argc, char *argv[]) {
     char *line;
     while ((line = readLine(file)) != NULL) {
         //process_line(line); // Modify the line
-        printf("%s\n", line);
-        //trim(&line);
+            if (toggleBoolean) {
+                printf("%s\n", line);
+            }        //trim(&line);
         modifyText(&line);
         printingTemplate(&line, newBatchName);
 
         fputs(line, outputFile);
         fputc('\n', outputFile);
-        printf("%s\n\n",line);
+            if (toggleBoolean) {
+                printf("%s\n\n",line);
+            }
         free(line);
     }
 
