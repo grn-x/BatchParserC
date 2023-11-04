@@ -46,7 +46,8 @@ void modifyText(char **text)
 {
     char *originalText = *text;
     int len = strlen(originalText);
-    char *newText = (char *)malloc((len * 2 + 1) * sizeof(char)); // Maximum possible length, each character might need to be doubled
+    //char *newText = (char *)malloc((len * 2 + 1) * sizeof(char)); // Maximum possible length, each character might need to be doubled
+    char *newText = (char *)malloc((len * 3 + 1) * sizeof(char)); // Maximum possible length, each character might need to be trippled ^^!
 
     if (newText == NULL)
     {
@@ -72,6 +73,11 @@ void modifyText(char **text)
         case '%':
             newText[j++] = originalText[i];
             break;
+        case '!':
+            newText[j++] = '^';
+            newText[j++] = '^';
+            break;
+
         }
         newText[j++] = originalText[i];
     }
